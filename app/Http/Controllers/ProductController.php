@@ -17,10 +17,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::with(['variant_price'])->get();
+        $product = Product::with(['product_variant', 'variant_price'])->get();
+        $variant = Variant::with('product_varients')->get();
        //dd($product);
         return view('products.index', [
-            'product' => $product
+            'product' => $product,
+            'variant' => $variant
         ]);
     }
 
@@ -94,6 +96,19 @@ class ProductController extends Controller
     }
 
     public function search_product(Request $request){
-        dd($request->title);
+        $title = $request->title;
+        $variant = $request->variant;
+        $price_from = $request->price_from;
+        $price_to = $request->price_to;
+        $date = $request->date;
+
+        // $product = Product::where('title', $title)
+        //                     ->orWhere('')
+
+        if(!is_null($title)){
+            $product = Product::where('title', $title)->get();
+            dd($product);
+        }
+        
     }
 }

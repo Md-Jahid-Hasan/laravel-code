@@ -8,14 +8,20 @@
 
 
     <div class="card">
-        <form action="{{ route('search') }}" method="post" class="card-header">
+        <form action="{{ route('search.product') }}" method="post" class="card-header">
+        @csrf
             <div class="form-row justify-content-between">
                 <div class="col-md-2">
                     <input type="text" name="title" placeholder="Product Title" class="form-control">
                 </div>
                 <div class="col-md-2">
                     <select name="variant" id="" class="form-control">
-
+                    @foreach( $variant as $v)
+                        @foreach( $v->product_varients as $pv)
+                            <option>{{$pv->variant}}</option>
+                        @endforeach
+                    @endforeach
+                    
                     </select>
                 </div>
 
