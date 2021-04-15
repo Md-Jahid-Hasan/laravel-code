@@ -17,9 +17,11 @@
                 <div class="col-md-2">
                     <select name="variant" id="" class="form-control">
                     @foreach( $variant as $v)
+                    <optgroup label="{{$v->title}}">
                         @foreach( $v->product_varients as $pv)
                             <option Value="{{ $pv->id }}">{{$pv->variant}}</option>
                         @endforeach
+                        </optgroup>
                     @endforeach
                     
                     </select>
