@@ -17,7 +17,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+        $product = Product::with(['variant_price'])->get();
+       //dd($product);
+        return view('products.index', [
+            'product' => $product
+        ]);
     }
 
     /**
@@ -87,5 +91,9 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //
+    }
+
+    public function search_product(Request $request){
+        dd($request->title);
     }
 }

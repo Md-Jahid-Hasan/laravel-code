@@ -8,7 +8,7 @@
 
 
     <div class="card">
-        <form action="" method="get" class="card-header">
+        <form action="{{ route('search') }}" method="post" class="card-header">
             <div class="form-row justify-content-between">
                 <div class="col-md-2">
                     <input type="text" name="title" placeholder="Product Title" class="form-control">
@@ -52,20 +52,38 @@
 
                     <tbody>
 
+                    @foreach($product as $product)
                     <tr>
                         <td>1</td>
-                        <td>T-Shirt <br> Created at : 25-Aug-2020</td>
-                        <td>Quality product in low cost</td>
+                        <td>{{$product->title}} <br> Created at : {{$product->created_at}}</td>
+                        <td>{{$product->description}}</td>
                         <td>
                             <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
 
                                 <dt class="col-sm-3 pb-0">
-                                    SM/ Red/ V-Nick
+                                    @foreach( $product->variant_price as $variant)
+
+                                        @if (!empty($variant->product_variant_one))
+                                            {{ $variant->product_variant_one }}/
+                                            @endif
+                                        @if (!empty($variant->product_variant_two))
+                                            {{ $variant->product_variant_two }}/
+                                            @endif
+                                        @if (!empty($variant->product_variant_three))
+                                            {{ $variant->product_variant_three }}/
+                                        @endif
+                                        
+                                        <br>
+                                    @endforeach
                                 </dt>
+                                
                                 <dd class="col-sm-9">
                                     <dl class="row mb-0">
-                                        <dt class="col-sm-4 pb-0">Price : {{ number_format(200,2) }}</dt>
-                                        <dd class="col-sm-8 pb-0">InStock : {{ number_format(50,2) }}</dd>
+                                    @foreach( $product->variant_price as $variant)
+                                        <dt class="col-sm-4 pb-0">Price : {{ number_format($variant->price,2) }}</dt>
+                                        <dd class="col-sm-8 pb-0">InStock : {{ number_format($variant->stock,2) }}</dd>
+                                        @endforeach
+                                    
                                     </dl>
                                 </dd>
                             </dl>
@@ -77,6 +95,7 @@
                             </div>
                         </td>
                     </tr>
+                    @endforeach
 
                     </tbody>
 
