@@ -98,17 +98,24 @@ class ProductController extends Controller
     public function search_product(Request $request){
         $title = $request->title;
         $variant = $request->variant;
-        $price_from = $request->price_from;
-        $price_to = $request->price_to;
+        $price_from = (int)$request->price_from;
+        $price_to = (int)$request->price_to;
         $date = $request->date;
+       
 
-        // $product = Product::where('title', $title)
-        //                     ->orWhere('')
-
-        if(!is_null($title)){
-            $product = Product::where('title', $title)->get();
-            dd($product);
-        }
+        
+            $product = Product::where('title', $title)
+            ->orWhereHas('product_variant', function($q) use($variant){
+                $q->where('variant', $variant);
+            })
+            ->orWhereHas('variant_price', function($q) use($price_from, $price_to){
+                $q->where('price', '>=', $price_from)->where('price', '<=', $price_to);
+            })->get();
+            $variant = Variant::with('product_varients')->get();
+            return view('products.index', [
+                'product' => $product,
+                'variant' => $variant
+            ]);
         
     }
 }
