@@ -18,7 +18,7 @@
                     <select name="variant" id="" class="form-control">
                     @foreach( $variant as $v)
                         @foreach( $v->product_varients as $pv)
-                            <option>{{$pv->variant}}</option>
+                            <option Value="{{ $pv->id }}">{{$pv->variant}}</option>
                         @endforeach
                     @endforeach
                     
