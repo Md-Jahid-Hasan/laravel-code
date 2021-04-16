@@ -45,7 +45,45 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        
+        $product = Product::create(['title' => $request->title,
+                'sku'=>$request->sku,
+                'description'=>$request->description,
+        ]);
+        
+        foreach($request->product_variant as $v){
+            foreach($v['tags'] as $op){
+                    ProductVariant::create([
+                        'product_id' => $product->id,
+                        'variant_id' => $v['option'],
+                        'variant' => $op
+                    ]);
+            }
+        }
 
+        foreach($request->product_variant_prices as $pvp){
+            if($pvp['price'] <> 0 && $pvp['stock'] <> 0){
+                $prod_var_pri = ProductVariantPrice::create([
+                    'product_id' => $product->id,
+                    'price' => (double)$pvp['price'],
+                    'stock' => (int)$pvp['stock']
+                ]);
+
+                $pro_var = explode("/",$pvp['title']);
+                array_pop($pro_var);
+                $test = array();
+                $f_key = array('product_variant_one','product_variant_two','product_variant_three');
+                $i = 0;
+                foreach($pro_var as $variant){
+                    $p_v = ProductVariant::where('variant', $variant)->get();
+                    $prod_var_pri->update([$f_key[$i++] => $p_v[0]->id]);
+                    array_push($test, $p_v[0]->id);
+                }
+            }
+        }
+        
+        return $test;
+        
     }
 
 
@@ -68,8 +106,13 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $variants = Variant::all();
-        return view('products.edit', compact('variants'));
+        //$product = Product::with(['product_variant', 'variant_price'])->get();
+        $variants = Variant::with('product_varients')->get();
+        //dd($product->product_variant);
+        return view('products.edit', [
+            'variants' => $variants,
+            'product' => $product
+        ]);
     }
 
     /**

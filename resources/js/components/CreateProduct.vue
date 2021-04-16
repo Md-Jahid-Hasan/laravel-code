@@ -110,13 +110,17 @@ export default {
         variants: {
             type: Array,
             required: true
+        },
+        product: {
+            
+            default: ""
         }
     },
     data() {
         return {
-            product_name: '',
-            product_sku: '',
-            description: '',
+            product_name:  this.product.title,
+            product_sku: this.product.sku,
+            description: this.product.description,
             images: [],
             product_variant: [
                 {
@@ -189,7 +193,7 @@ export default {
             }
 
 
-            axios.post('/product', product).then(response => {
+            axios.post('/product/create', product).then(response => {
                 console.log(response.data);
             }).catch(error => {
                 console.log(error);

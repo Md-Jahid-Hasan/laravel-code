@@ -22,6 +22,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::match(['get', 'post'], '/search', 'ProductController@search_product')->name('search.product');
+Route::post('/product/create', 'ProductController@store');
 
 Route::middleware('auth')->group(function () {
     Route::resource('product-variant', 'VariantController');

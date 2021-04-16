@@ -99,7 +99,7 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('product.edit', 1) }}" class="btn btn-success">Edit</a>
+                                <a href="{{ route('product.edit', $product) }}" class="btn btn-success">Edit</a>
                             </div>
                         </td>
                     </tr>
@@ -118,10 +118,9 @@
                     <p>Showing 1 to 10 out of 100</p>
                 </div>
                 <div class="col-md-2">
-
+                
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
