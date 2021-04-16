@@ -60,7 +60,7 @@
 
                     <tbody>
 
-                    @foreach($product as $product)
+                    @foreach($products as $product)
                     <tr>
                         <td>1</td>
                         <td>{{$product->title}} <br> Created at : {{$product->created_at}}</td>
@@ -70,17 +70,17 @@
 
                                 <dt class="col-sm-3 pb-0">
                                     @foreach( $product->variant_price as $variant)
-
-                                        @if (!empty($variant->product_variant_one))
-                                            {{ $variant->product_variant_one }}/
+                                        @foreach( $product->product_variant as $check)
+                                            @if (!empty($variant->product_variant_one) && ($check->id==$variant->product_variant_one))
+                                                {{ $check->variant }}/
                                             @endif
-                                        @if (!empty($variant->product_variant_two))
-                                            {{ $variant->product_variant_two }}/
+                                            @if (!empty($variant->product_variant_two) && ($check->id==$variant->product_variant_two))
+                                                {{ $check->variant }}/
                                             @endif
-                                        @if (!empty($variant->product_variant_three))
-                                            {{ $variant->product_variant_three }}/
-                                        @endif
-                                        
+                                            @if (!empty($variant->product_variant_three) && ($check->id==$variant->product_variant_three))
+                                                {{ $check->variant }}/
+                                            @endif
+                                        @endforeach
                                         <br>
                                     @endforeach
                                 </dt>
@@ -115,10 +115,11 @@
         <div class="card-footer">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <p>Showing 1 to 10 out of 100</p>
+                    <p>Showing {{$products->firstItem()}} to {{$products->lastItem()}} out of {{$products->total()}}</p>
                 </div>
-                <div class="col-md-2">
                 
+                <div class="col-md-2">
+                {{$products->links()}}
                 </div>
             </div>
         </div>

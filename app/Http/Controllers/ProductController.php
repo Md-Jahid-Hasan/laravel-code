@@ -17,11 +17,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::with(['product_variant', 'variant_price'])->get();
+        $product = Product::with(['product_variant', 'variant_price'])->paginate(2);
         $variant = Variant::with('product_varients')->get();
        //dd($product);
         return view('products.index', [
-            'product' => $product,
+            'products' => $product,
             'variant' => $variant
         ]);
     }
@@ -187,15 +187,16 @@ class ProductController extends Controller
 
         
             $product = Product::where('title', $title)
+            ->orWhere('created_at', $date)
             ->orWhereHas('product_variant', function($q) use($variant){
                 $q->where('variant', $variant);
             })
             ->orWhereHas('variant_price', function($q) use($price_from, $price_to){
                 $q->where('price', '>=', $price_from)->where('price', '<=', $price_to);
-            })->get();
+            })->paginate(2);
             $variant = Variant::with('product_varients')->get();
             return view('products.index', [
-                'product' => $product,
+                'products' => $product,
                 'variant' => $variant
             ]);
         
