@@ -5,6 +5,9 @@
         <h1 class="h3 mb-0 text-gray-800">Edit Product</h1>
     </div>
     <div id="app">
-        <create-product :variants="{{ $variants }}" :product="{{$product}}">Loading</create-product>
+        <create-product :variants="{{ $variants }}" 
+                        :product="{{$product}}" 
+                        :product_variant_type="{{$product->product_variant}}"
+                        :variant_price="{{$product->variant_price}}">Loading</create-product>
     </div>
 @endsection

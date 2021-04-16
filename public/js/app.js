@@ -2026,20 +2026,56 @@ __webpack_require__.r(__webpack_exports__);
       required: true
     },
     product: {
-      "default": ""
+      "default": function _default() {
+        return [];
+      }
+    },
+    product_variant_type: {
+      "default": function _default() {
+        return [];
+      }
+    },
+    variant_price: {
+      "default": function _default() {
+        return [];
+      }
     }
   },
   data: function data() {
+    var _this = this;
+
     return {
       product_name: this.product.title,
       product_sku: this.product.sku,
       description: this.product.description,
       images: [],
-      product_variant: [{
-        option: this.variants[0].id,
-        tags: []
-      }],
-      product_variant_prices: [],
+      product_variant: this.variants.map(function (a) {
+        return {
+          option: a.id,
+          tags: _this.product_variant_type.filter(function (b) {
+            return a.id === b.variant_id;
+          }).map(function (c) {
+            return c.variant;
+          })
+        };
+      }),
+      product_variant_prices: this.variant_price.map(function (item) {
+        return {
+          title: _this.product_variant_type.filter(function (v) {
+            if (v.id == item.product_variant_one) {
+              return v.variant;
+            } else if (v.id == item.product_variant_two) {
+              return v.variant;
+            } else if (v.id == item.product_variant_three) {
+              return v.variant;
+            }
+          }).map(function (c) {
+            return c.variant;
+          }).join('/'),
+          price: item.price,
+          stock: item.stock
+        };
+      }),
       dropzoneOptions: {
         url: 'https://httpbin.org/post',
         thumbnailWidth: 150,
@@ -2072,7 +2108,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     // check the variant and render all the combination
     checkVariant: function checkVariant() {
-      var _this = this;
+      var _this2 = this;
 
       var tags = [];
       this.product_variant_prices = [];
@@ -2080,7 +2116,7 @@ __webpack_require__.r(__webpack_exports__);
         tags.push(item.tags);
       });
       this.getCombn(tags).forEach(function (item) {
-        _this.product_variant_prices.push({
+        _this2.product_variant_prices.push({
           title: item,
           price: 0,
           stock: 0
@@ -2101,6 +2137,7 @@ __webpack_require__.r(__webpack_exports__);
       }, []);
       return ans;
     },
+    makeTitle: function makeTitle() {},
     // store product into database
     saveProduct: function saveProduct() {
       var product = {
@@ -2111,11 +2148,23 @@ __webpack_require__.r(__webpack_exports__);
         product_variant: this.product_variant,
         product_variant_prices: this.product_variant_prices
       };
-      axios.post('/product/create', product).then(function (response) {
-        console.log(response.data);
-      })["catch"](function (error) {
-        console.log(error);
-      });
+
+      if (this.product != []) {
+        //if product Create
+        axios.post('/product/create', product).then(function (response) {
+          console.log(response.data);
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else {
+        //if product update
+        axios.post('/product/update/' + this.product.id, product).then(function (response) {
+          console.log(response.data);
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+
       console.log(product);
     }
   },

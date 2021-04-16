@@ -112,8 +112,13 @@ export default {
             required: true
         },
         product: {
-            
-            default: ""
+            default: ()=>[]
+        },
+        product_variant_type: {
+            default: ()=>[]
+        },
+        variant_price: {
+            default: ()=>[]
         }
     },
     data() {
@@ -122,13 +127,26 @@ export default {
             product_sku: this.product.sku,
             description: this.product.description,
             images: [],
-            product_variant: [
-                {
-                    option: this.variants[0].id,
-                    tags: []
-                }
-            ],
-            product_variant_prices: [],
+            product_variant: this.variants.map(
+                a => ({
+                    option: a.id,
+                    tags: this.product_variant_type.filter(b => a.id === b.variant_id).map(c => c.variant),
+                })
+                
+            ),
+            product_variant_prices: this.variant_price.map(
+
+                item => ({
+                    title: this.product_variant_type.filter(v => {
+                        if(v.id == item.product_variant_one){return v.variant;}
+                        else if(v.id == item.product_variant_two){return v.variant;}
+                        else if(v.id == item.product_variant_three){return v.variant;}
+                        
+                    }).map(c => c.variant).join('/'),
+                    price: item.price,
+                    stock: item.stock
+                })
+            ),
             dropzoneOptions: {
                 url: 'https://httpbin.org/post',
                 thumbnailWidth: 150,
@@ -181,6 +199,10 @@ export default {
             return ans;
         },
 
+        makeTitle(){
+
+        },
+
         // store product into database
         saveProduct() {
             let product = {
@@ -192,12 +214,22 @@ export default {
                 product_variant_prices: this.product_variant_prices
             }
 
+            if (this.product != []){
+                //if product Create
+                axios.post('/product/create', product).then(response => {
+                    console.log(response.data);
+                }).catch(error => {
+                    console.log(error);
+                })
 
-            axios.post('/product/create', product).then(response => {
-                console.log(response.data);
-            }).catch(error => {
-                console.log(error);
-            })
+            } else{
+              //if product update
+                axios.post('/product/update/'+this.product.id, product).then(response => {
+                    console.log(response.data);
+                }).catch(error => {
+                    console.log(error);
+                })
+            }
 
             console.log(product);
         }
